@@ -3,15 +3,20 @@ Created on 2024/12/01
 
 @author: kotaro
 '''
-import mahjong
 
 import streamlit as st
-from _ast import Div
+import requests
+import os
+
+# Supabaseとの接続情報
+SUPABASE_URL = os.getenv("STREAMLIT_SUPABASE_URL")
+SUPABASE_KEY = os.getenv("STREAMLIT_SUPABASE_KEY")
 
 # ページ名
 st.set_page_config(
     page_title = "Nanikiru")
 
+# 
 
 # セッション情報の初期化
 if "page_id" not in st.session_state:

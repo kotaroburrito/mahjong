@@ -12,7 +12,6 @@ from _ast import Div
 st.set_page_config(
     page_title = "Nanikiru")
 
-
 # セッション情報の初期化
 if "page_id" not in st.session_state:
     st.session_state.page_id = "main"
