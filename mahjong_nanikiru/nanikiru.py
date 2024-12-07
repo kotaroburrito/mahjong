@@ -25,13 +25,40 @@ tiles = [
 
 st.image(tiles, caption=["白", "發", "中"], width=80)
 
-# ページ名
-st.set_page_config(
-    page_title = "Nanikiru")
+# Superbaseからクイズデータを取得
+def fetch_quiz():
+    headers = {
+        "Authorization": f"Bearer{SUPABASE_KEY}", 
+        "Content-Type": "application/json"
+    }
+        
+    # ランダムなクイズデータを1件取得
+    response = 
+    request.get(f"{SUPABASE_URL}/rest/v1/nanikiru?select=*&limit=1&order=id.asc"), 
+    headers=headers)
+return response.json()
 
-st.title = "Nanikiru"
+# アプリケーションのメイン
+st.title("Nanikiru?")
 
-# test
+# クイズデータを取得
+quiz = fetch_quiz()[0]
+
+# クイズ情報を表示
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # セッション情報の初期化
 if "page_id" not in st.session_state:
