@@ -33,6 +33,10 @@ st.title("Nanikiru?")
 
 # Initialize Supabase connection.
 conn = st.connection(name="supabase", type=SupabaseConnection, url=SUPABASE_URL, key=SUPABASE_KEY)
+
+# Pythonクライエントを取得
+supabase = conn.client
+
 st.write(dir(conn))
 st.write(st.secrets["supabase"])
 
@@ -40,7 +44,8 @@ def fetch_quiz():
     try: 
         # Perform query.
         # response = conn.query("*", table="nanikiru", ttl="10m").execute()
-        response = conn.execute("SELECT * FROM nanikiru")
+        # response = conn.execute("SELECT * FROM nanikiru")
+        response = supabase.table("nanikiru").select("*").execute()
 
         # response = supabase.table('nanikiru').select('*').execute()
         # response = supabase.table("nanikiru").select("id, dragon_normal, your_wind, table_wind, hand, zimo, correct_tile, explanation").execute()
@@ -53,7 +58,7 @@ def fetch_quiz():
         # ここまでdebug用
     
         # レスポンスデータがあるとき
-        if response.data:
+        if response.get(data):
             # ランダムに1問選ぶ
             quiz_data = random.choice(response.data)
             return quiz_data
