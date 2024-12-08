@@ -8,7 +8,7 @@ import streamlit as st
 import requests
 import os
 import random
-from supabase import create_client, Client
+from st_supabase_connection import SupabaseConnection
 
 # Supabaseとの接続情報
 SUPABASE_URL = os.getenv("STREAMLIT_SUPABASE_URL")
@@ -29,11 +29,18 @@ SUPABASE_KEY = os.getenv("STREAMLIT_SUPABASE_KEY")
 st.title("Nanikiru?")
 
 # Superbaseからクイズデータを取得
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+# supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+# Initialize Supabase connection.
+conn = st.connection("supabase",type=SupabaseConnection)
+
 
 def fetch_quiz():
     try: 
-        response = supabase.table('nanikiru').select('*').execute()
+        # Perform query.
+        rows = conn.query("*", table="nanikiru", ttl="10m").execute()
+
+        # response = supabase.table('nanikiru').select('*').execute()
         # response = supabase.table("nanikiru").select("id, dragon_normal, your_wind, table_wind, hand, zimo, correct_tile, explanation").execute()
         
         # debug用
