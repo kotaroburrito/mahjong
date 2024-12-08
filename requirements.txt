@@ -1,4 +1,4 @@
 streamlit
 mahjong
-st-supabase-connection
+st-supabase-connection==2.0.1
 st_supabase_connection
