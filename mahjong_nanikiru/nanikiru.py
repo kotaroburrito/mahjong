@@ -15,15 +15,15 @@ SUPABASE_URL = os.getenv("STREAMLIT_SUPABASE_URL")
 SUPABASE_KEY = os.getenv("STREAMLIT_SUPABASE_KEY")
 
 # 牌画像
-TILE_BAI = os.getenv("BAI_URL")
-TILE_FA = os.getenv("FA_URL")
-TILE_ZHONG = os.getenv("BAI_ZHONG")
+# TILE_BAI = os.getenv("BAI_URL")
+# TILE_FA = os.getenv("FA_URL")
+# TILE_ZHONG = os.getenv("BAI_ZHONG")
 
-tiles = [
-    f"{TILE_BAI}", 
-    f"{TILE_FA}", 
-    f"{TILE_ZHONG}"
-]
+# tiles = [
+#     f"{TILE_BAI}", 
+#     f"{TILE_FA}", 
+#     f"{TILE_ZHONG}"
+# ]
 
 # アプリケーションのメイン
 st.title("Nanikiru?")
