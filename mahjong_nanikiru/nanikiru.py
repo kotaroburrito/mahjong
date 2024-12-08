@@ -32,21 +32,22 @@ st.title("Nanikiru?")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def fetch_quiz():
-    response = supabase.table("nanikiru").select("*").execute()
+    try: 
+        response = supabase.table("nanikiru").select("*").execute()
     
-    # レスポンスエラーのチェック
-    if not response.data: 
-        st.error(f"クイズデータがありません: {response.error.message}")
-        return None
+        # レスポンスデータがあるとき
+        if response.data:
+            # ランダムに1問選ぶ
+            quiz_data = random.choice(response.data)
+            return quiz_data
 
-    # レスポンスデータの有無チェック
-    if response.data:
-        # ランダムに1問選ぶ
-        quiz_data = random.choice(response.data)
-        return quiz_data
-    
-    else: 
-        st.error("クイズデータの取得に失敗しました。")
+        # レスポンスデータがないとき
+        if not response.data: 
+            st.error("クイズデータが見つかりません。")
+            return None
+        
+    except Exception as e: 
+        st.error(f"クイズデータの取得中にエラーが発生しました。{e}")
         return None
 
 # クイズデータのオブジェクト生成
