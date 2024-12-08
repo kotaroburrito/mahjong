@@ -11,8 +11,8 @@ import random
 from st_supabase_connection import SupabaseConnection
 
 # Supabaseとの接続情報
-SUPABASE_URL = os.getenv("STREAMLIT_SUPABASE_URL")
-SUPABASE_KEY = os.getenv("STREAMLIT_SUPABASE_KEY")
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 # 牌画像
 # TILE_BAI = os.getenv("BAI_URL")
@@ -32,8 +32,7 @@ st.title("Nanikiru?")
 # supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Initialize Supabase connection.
-conn = st.connection("supabase",type=SupabaseConnection)
-
+conn = st.connection("supabase", type=SupabaseConnection, url=SUPABASE_URL, key=SUPABASE_KEY)
 
 def fetch_quiz():
     try: 
