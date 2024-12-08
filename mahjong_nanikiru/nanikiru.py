@@ -37,7 +37,8 @@ conn = st.connection("supabase", type=SupabaseConnection, url=SUPABASE_URL, key=
 def fetch_quiz():
     try: 
         # Perform query.
-        rows = conn.query("*", table="nanikiru", ttl="10m").execute()
+        # response = conn.query("*", table="nanikiru", ttl="10m").execute()
+        response = conn.execute("SELECT * FROM nanikiru")
 
         # response = supabase.table('nanikiru').select('*').execute()
         # response = supabase.table("nanikiru").select("id, dragon_normal, your_wind, table_wind, hand, zimo, correct_tile, explanation").execute()
