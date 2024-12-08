@@ -25,8 +25,6 @@ tiles = [
     f"{TILE_ZHONG}"
 ]
 
-st.image(tiles, caption=["白", "發", "中"], width=80)
-
 # アプリケーションのメイン
 st.title("Nanikiru?")
 
@@ -37,8 +35,8 @@ def fetch_quiz():
     response = supabase.table("nanikiru").select("*").execute()
     
     # レスポンスエラーのチェック
-    if response.error: 
-        st.error(f"クイズデータの取得に失敗しました: {response.error.message}")
+    if not response.data: 
+        st.error(f"クイズデータがありません: {response.error.message}")
         return None
 
     # レスポンスデータの有無チェック
