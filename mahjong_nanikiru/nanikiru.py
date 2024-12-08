@@ -38,7 +38,6 @@ conn = st.connection(name="supabase", type=SupabaseConnection, url=SUPABASE_URL,
 supabase = conn.client
 
 st.write(dir(conn))
-st.write(st.secrets["supabase"])
 
 def fetch_quiz():
     try: 
