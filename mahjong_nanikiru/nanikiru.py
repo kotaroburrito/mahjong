@@ -50,10 +50,10 @@ def fetch_quiz():
         # response = supabase.table("nanikiru").select("id, dragon_normal, your_wind, table_wind, hand, zimo, correct_tile, explanation").execute()
         
         # debug用
-        st.write("レスポンスの内容: ", response)
-        st.write("レスポンスの種類: ", type(response))
-        st.write("レスポンスのデータ: ", response.data)
-        st.write("レスポンスの詳細:", response.__dict__)
+        # st.write("レスポンスの内容: ", response)
+        # st.write("レスポンスの種類: ", type(response))
+        # st.write("レスポンスのデータ: ", response.data)
+        # st.write("レスポンスの詳細:", response.__dict__)
         # ここまでdebug用
     
         # レスポンスデータがあるとき
