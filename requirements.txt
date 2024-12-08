@@ -1,3 +1,4 @@
 streamlit
 mahjong
+supabase
 st_supabase_connection
