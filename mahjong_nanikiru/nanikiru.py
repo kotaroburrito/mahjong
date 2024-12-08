@@ -84,7 +84,7 @@ if quiz:
     hand_tiles = quiz['hand'].split(",") # 1カラム1牌にするならここは変える!
     for tile in hand_tiles: 
         hand_tile_url = f"https://raw.githubusercontent.com/kotaroburrito/mahjong/master/images/{tile}.PNG"
-        st.image(hand_title_url, width=50)
+        st.image(hand_tile_url, width=50)
 
     # ツモを表示
     st.write("ツモ: ")
