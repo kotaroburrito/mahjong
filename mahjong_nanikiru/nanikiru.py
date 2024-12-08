@@ -33,8 +33,8 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def fetch_quiz():
     try: 
-        # response = supabase.table("nanikiru").select("*").execute()
-        response = supabase.table("nanikiru").select("id, dragon_normal, your_wind, table_wind, hand, zimo, correct_tile, explanation").execute()
+        response = supabase.table('nanikiru').select('*').execute()
+        # response = supabase.table("nanikiru").select("id, dragon_normal, your_wind, table_wind, hand, zimo, correct_tile, explanation").execute()
         
         # debug用
         st.write("レスポンスの内容: ", response)
