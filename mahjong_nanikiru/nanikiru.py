@@ -34,7 +34,12 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 def fetch_quiz():
     try: 
         response = supabase.table("nanikiru").select("*").execute()
-        st.write(response)
+        
+        # debug用
+        st.write("レスポンスの内容: ", response)
+        st.write("レスポンスの種類: ", type(response))
+        st.write("レスポンスのデータ: ", response.data)
+        # ここまでdebug用
     
         # レスポンスデータがあるとき
         if response.data:
