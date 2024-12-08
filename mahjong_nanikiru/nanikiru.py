@@ -57,7 +57,7 @@ def fetch_quiz():
         # ここまでdebug用
     
         # レスポンスデータがあるとき
-        if response.get(data):
+        if response.get("data"):
             # ランダムに1問選ぶ
             quiz_data = random.choice(response.data)
             return quiz_data
