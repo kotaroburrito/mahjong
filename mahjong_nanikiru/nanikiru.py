@@ -34,7 +34,7 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 def fetch_quiz():
     try: 
         # response = supabase.table("nanikiru").select("*").execute()
-        response = supabase.table("nanikiru").select("id, hand, dragon_normal, your_wind, table_wind").execute()
+        response = supabase.table("nanikiru").select("id, dragon_normal, your_wind, table_wind, hand, zimo, correct_tile, explanation").execute()
         
         # debug用
         st.write("レスポンスの内容: ", response)
@@ -70,8 +70,8 @@ if quiz:
     st.write("手牌: ")
     hand_tiles = quiz['hand'].split(",") # 1カラム1牌にするならここは変える!
     for tile in hand_tiles: 
-        tile_url = f"https://raw.githubusercontent.com/kotaroburrito/mahjong/master/images/{tile}.PNG"
-        st.image(title_url, width=50)
+        hand_tile_url = f"https://raw.githubusercontent.com/kotaroburrito/mahjong/master/images/{tile}.PNG"
+        st.image(hand_title_url, width=50)
 
     # ツモを表示
     st.write("ツモ: ")
