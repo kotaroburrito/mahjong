@@ -32,7 +32,7 @@ st.title("Nanikiru?")
 # supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Initialize Supabase connection.
-conn = st.connection("supabase", type=SupabaseConnection, url=SUPABASE_URL, key=SUPABASE_KEY)
+conn = st.connection(name="supabase", type=SupabaseConnection, url=SUPABASE_URL, key=SUPABASE_KEY)
 
 def fetch_quiz():
     try: 
