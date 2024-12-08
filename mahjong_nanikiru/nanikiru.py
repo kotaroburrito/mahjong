@@ -7,77 +7,90 @@ Created on 2024/12/01
 import streamlit as st
 import requests
 import os
+import random
+from st_supabase_connection import SupabaseConnection
 
 # Supabaseとの接続情報
 SUPABASE_URL = os.getenv("STREAMLIT_SUPABASE_URL")
 SUPABASE_KEY = os.getenv("STREAMLIT_SUPABASE_KEY")
 
-# ページ名
-st.set_page_config(
-    page_title = "Nanikiru")
+# 牌画像
+# TILE_BAI = os.getenv("BAI_URL")
+# TILE_FA = os.getenv("FA_URL")
+# TILE_ZHONG = os.getenv("BAI_ZHONG")
 
-st.title = "Nanikiru"
+# tiles = [
+#     f"{TILE_BAI}", 
+#     f"{TILE_FA}", 
+#     f"{TILE_ZHONG}"
+# ]
 
-# test
+# アプリケーションのメイン
+st.title("Nanikiru?")
 
-# セッション情報の初期化
-if "page_id" not in st.session_state:
-    st.session_state.page_id = "main"
-    st.session_state.answers = []
+# Superbaseからクイズデータを取得
+# supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# 最初のページ
-def main():
-    st.markdown(
-        "<h1 style = 'text-align: center;> Nanikiru </h1>"
-        )
-    
-    def change_page():
-        st.session_state.answer.append(st.session_state.answer0)
-        st.session_state.page_id = "page1"
+# Initialize Supabase connection.
+conn = st.connection("supabase",type=SupabaseConnection)
+
+
+def fetch_quiz():
+    try: 
+        # Perform query.
+        rows = conn.query("*", table="nanikiru", ttl="10m").execute()
+
+        # response = supabase.table('nanikiru').select('*').execute()
+        # response = supabase.table("nanikiru").select("id, dragon_normal, your_wind, table_wind, hand, zimo, correct_tile, explanation").execute()
         
-    with st.form("f0"): 
-        st.form_submit_button("Start", on_click = change_page)
-        
-# 問題1
-def page1():
-    st.markdown(
-        "<h1 style='text-align: center;'>何切る?</h1>", 
-        unsafe_allow_html = True,
-        )
+        # debug用
+        st.write("レスポンスの内容: ", response)
+        st.write("レスポンスの種類: ", type(response))
+        st.write("レスポンスのデータ: ", response.data)
+        st.write("レスポンスの詳細:", response.__dict__)
+        # ここまでdebug用
     
-    def change_page():
-        st.session_state.answer.append(st.session_state.answer1)
-        st.session_state.page_id = "page2"
-    
-    with st.form("f1"): 
-        st.radio("何切る?", ["A", "B", "C"], key = "answer1")
-        st.form_submit_button("これ切る!", on_click = change_page)
-        
-def page_end():
-    st.markdown(
-        "<h2 style='text-align: center;'>あなたの回答は</h2>",
-        unsafe_allow_html = True,
-        )
+        # レスポンスデータがあるとき
+        if response.data:
+            # ランダムに1問選ぶ
+            quiz_data = random.choice(response.data)
+            return quiz_data
 
-    st.markdown(
-        f"<div style='text-align: center;'>テーブル: {st.session_state.answer[0]}</div>",
-        unsafe_allow_html = True,
-        )
-    
-    for num, value in enumerate(st.session_state.answers, 0):
-        if num != 0:
-            st.markdown(
-                f"<div style='text-lign: center;'> 第{num}問: {value}</div>", 
-                unsafe_allow_html = True,
-                )
-            
-    if st.session_state.page_id == "main": 
-        main()
-    
-    if st.session_state.page_id == "page1":
-        page1()
-    
-    if st.session_state.page_id == "page_end":
-        page_end()
+        # レスポンスデータがないとき
+        if not response.data: 
+            st.error("クイズデータが見つかりません。")
+            return None
+        
+    except Exception as e: 
+        st.error(f"クイズデータの取得中にエラーが発生しました。{e}")
+        return None
+
+# クイズデータのオブジェクト生成
+quiz = fetch_quiz()
+
+if quiz: 
+    # 自風、場風、ドラを表示
+    st.write(f"自風: {quiz['your_wind']}/ 場風: {quiz['table_wind']}")
+    st.write(f"ドラ: {quiz['dragon_normal']}")
+
+    # 手牌を表示
+    st.write("手牌: ")
+    hand_tiles = quiz['hand'].split(",") # 1カラム1牌にするならここは変える!
+    for tile in hand_tiles: 
+        hand_tile_url = f"https://raw.githubusercontent.com/kotaroburrito/mahjong/master/images/{tile}.PNG"
+        st.image(hand_title_url, width=50)
+
+    # ツモを表示
+    st.write("ツモ: ")
+    zimo_tile_url = f"https://raw.githubusercontent.com/kotaroburrito/mahjong/master/images/{quiz['zimo']}.PNG"
+    st.image(zimo_tile_url, width=50)
+
+    # 答えを非表示にしておき、回答後に表示
+    if st.button("答えを見る"): 
+        correct_tile_url = f"https://raw.githubusercontent.com/kotaroburrito/mahjong/master/images/{quiz['correct_tile']}.PNG"
+        st.write("正解: ")
+        st.image(correct_tile_url, width=50)
+        st.write(f"解説: {quiz['explanation']}")
+
 
 
