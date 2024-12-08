@@ -33,6 +33,8 @@ st.title("Nanikiru?")
 
 # Initialize Supabase connection.
 conn = st.connection(name="supabase", type=SupabaseConnection, url=SUPABASE_URL, key=SUPABASE_KEY)
+st.write(dir(conn))
+st.write(st.secrets["supabase"])
 
 def fetch_quiz():
     try: 
