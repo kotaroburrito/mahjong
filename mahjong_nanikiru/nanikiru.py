@@ -10,46 +10,32 @@ import os
 import random
 from st_supabase_connection import SupabaseConnection
 
+# 牌のサイズ
+PAI_WIDTH = 20
+
+# 牌の画像URLベース
+PAI_URL = os.getenv("PAI_URL")
+PNG = ".PNG"
+
+# 回答ボタンの文言
+SHOW_ANSWER_BUTTON = "答えを見る"
+
 # Supabaseとの接続情報
-SUPABASE_URL = os.getenv("STREAMLIT_SUPABASE_URL")
-SUPABASE_KEY = os.getenv("STREAMLIT_SUPABASE_KEY")
-
-# 牌画像
-# TILE_BAI = os.getenv("BAI_URL")
-# TILE_FA = os.getenv("FA_URL")
-# TILE_ZHONG = os.getenv("BAI_ZHONG")
-
-# tiles = [
-#     f"{TILE_BAI}", 
-#     f"{TILE_FA}", 
-#     f"{TILE_ZHONG}"
-# ]
-
-# アプリケーションのメイン
-st.title("Nanikiru?")
-
-# Superbaseからクイズデータを取得
-# supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 # Initialize Supabase connection.
-conn = st.connection("supabase",type=SupabaseConnection)
+conn = st.connection(name="supabase", type=SupabaseConnection, url=SUPABASE_URL, key=SUPABASE_KEY)
 
+# Pythonクライエントを取得
+supabase = conn.client
 
+# クイズデータ取得メソッド
 def fetch_quiz():
     try: 
         # Perform query.
-        rows = conn.query("*", table="nanikiru", ttl="10m").execute()
+        response = supabase.table("nanikiru").select("*").execute()
 
-        # response = supabase.table('nanikiru').select('*').execute()
-        # response = supabase.table("nanikiru").select("id, dragon_normal, your_wind, table_wind, hand, zimo, correct_tile, explanation").execute()
-        
-        # debug用
-        st.write("レスポンスの内容: ", response)
-        st.write("レスポンスの種類: ", type(response))
-        st.write("レスポンスのデータ: ", response.data)
-        st.write("レスポンスの詳細:", response.__dict__)
-        # ここまでdebug用
-    
         # レスポンスデータがあるとき
         if response.data:
             # ランダムに1問選ぶ
@@ -65,32 +51,76 @@ def fetch_quiz():
         st.error(f"クイズデータの取得中にエラーが発生しました。{e}")
         return None
 
-# クイズデータのオブジェクト生成
-quiz = fetch_quiz()
+# 出題メソッド
+def show_quiz():
+    # クイズデータの各要素を取得
+    dragon_normal = quiz['dragon_normal']
+    dragon_normal_url = f"{PAI_URL}{dragon_normal}{PNG}"
 
-if quiz: 
+    your_wind = quiz['your_wind']
+    your_wind_url = f"{PAI_URL}{your_wind}{PNG}"
+
+    table_wind = quiz['table_wind']
+    table_wind_url = f"{PAI_URL}{table_wind}{PNG}"
+
+    hand = [tile.strip() for tile in quiz['hand'].split(",")]
+    hand_tile_url = [f"{PAI_URL}{tile}{PNG}" for tile in hand]
+
+    zimo = quiz['zimo']
+    zimo_tile_url = f"{PAI_URL}{zimo}{PNG}"
+
     # 自風、場風、ドラを表示
-    st.write(f"自風: {quiz['your_wind']}/ 場風: {quiz['table_wind']}")
-    st.write(f"ドラ: {quiz['dragon_normal']}")
+    st.write("自風: ")
+    st.image(your_wind_url, width=PAI_WIDTH)
+
+    st.write("場風: ")
+    st.image(table_wind_url, width=PAI_WIDTH)
+
+    st.write(f"ドラ: ")
+    st.image(dragon_normal_url, width=PAI_WIDTH)
 
     # 手牌を表示
     st.write("手牌: ")
-    hand_tiles = quiz['hand'].split(",") # 1カラム1牌にするならここは変える!
-    for tile in hand_tiles: 
-        hand_tile_url = f"https://raw.githubusercontent.com/kotaroburrito/mahjong/master/images/{tile}.PNG"
-        st.image(hand_title_url, width=50)
 
+    # 手牌を表示する列を生成
+    hand_columns = st.columns(len(hand))
+    for i, url in enumerate(hand_tile_url): 
+        
+        # 各列に牌の画像を配置
+        with hand_columns[i]: 
+            st.image(url, width=PAI_WIDTH)
+            
     # ツモを表示
     st.write("ツモ: ")
-    zimo_tile_url = f"https://raw.githubusercontent.com/kotaroburrito/mahjong/master/images/{quiz['zimo']}.PNG"
-    st.image(zimo_tile_url, width=50)
+    st.image(zimo_tile_url, width=PAI_WIDTH)
 
-    # 答えを非表示にしておき、回答後に表示
-    if st.button("答えを見る"): 
-        correct_tile_url = f"https://raw.githubusercontent.com/kotaroburrito/mahjong/master/images/{quiz['correct_tile']}.PNG"
-        st.write("正解: ")
-        st.image(correct_tile_url, width=50)
-        st.write(f"解説: {quiz['explanation']}")
+    return
+
+# 回答表示メソッド
+def show_answer():
+    # 回答データの各要素を取得
+    correct_tile = quiz['correct_tile']
+    correct_tile_url = f"{PAI_URL}{correct_tile}{PNG}"
+    explanation = quiz['explanation']
+
+    st.write("正解: ")
+    st.image(correct_tile_url, width=PAI_WIDTH)
+    st.write(f"解説: {explanation}")
+
+    return
 
 
+# アプリケーションのメイン
+st.title("Nanikiru?")
+
+# クイズデータのオブジェクト生成
+quiz = fetch_quiz()
+
+# クイズデータが取得できた場合
+if quiz: 
+    show_quiz()
+    
+    # 回答表示ボタンが押された場合
+    if st.button(SHOW_ANSWER_BUTTON): 
+        show_answer()
 
