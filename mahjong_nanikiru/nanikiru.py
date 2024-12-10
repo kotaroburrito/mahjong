@@ -23,7 +23,7 @@ st.markdown("""
 .hand-container {
     display: flex;
     justify-content: center;
-    gap: 0px /* 牌の間の余白を0にする */
+    gap: 0px; /* 牌の間の余白を0にする */
     }
 
 .hand-container img {
