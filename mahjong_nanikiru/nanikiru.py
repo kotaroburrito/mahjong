@@ -64,8 +64,7 @@ def show_quiz():
     table_wind_url = f"{PAI_URL}{table_wind}{PNG}"
 
     hand = [tile.strip() for tile in quiz['hand'].split(",")]
-    for tile in hand: 
-        hand_tile_url = [f"{PAI_URL}{tile}{PNG}"]
+    hand_tile_url = [f"{PAI_URL}{tile}{PNG}" for tile in hand]
 
     zimo = quiz['zimo']
     zimo_tile_url = f"{PAI_URL}{zimo}{PNG}"
@@ -120,6 +119,8 @@ quiz = fetch_quiz()
 # クイズデータが取得できた場合
 if quiz: 
     show_quiz()
+    st.write(f"PAI_URL: {PAI_URL}")
+    st.write(f"画像URL例: {PAI_URL}zhong{PNG}")
     
     # 回答表示ボタンが押された場合
     if st.button(SHOW_ANSWER_BUTTON): 
