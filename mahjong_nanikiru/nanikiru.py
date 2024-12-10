@@ -101,7 +101,7 @@ def show_quiz():
     hand_html = "<div class='hand-container'>"
 
     for url in hand_tile_url: 
-        hand_html += f"<img src='{url}' width='{PATH_WIDTH}'>"
+        hand_html += f"<img src='{url}' width='{PAI_WIDTH}'>"
     
     hand_html += "</div>"
     st.markdown(hand_html, unsafe_allow_html=True)
