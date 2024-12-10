@@ -85,11 +85,11 @@ def show_quiz():
 
     # 手牌を表示する列を生成
     hand_columns = st.columns(len(hand))
-    for i in len(hand): 
+    for i, url in enumerate(hand_tile_url): 
         
         # 各列に牌の画像を配置
         with hand_columns[i]: 
-            st.image(hand_tile_url[i], width=PAI_WIDTH)
+            st.image(url, width=PAI_WIDTH)
             
     # ツモを表示
     st.write("ツモ: ")
