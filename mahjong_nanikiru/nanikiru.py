@@ -17,15 +17,13 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 # アプリケーションのメイン
 st.title("Nanikiru?")
 
-# Superbaseからクイズデータを取得
 # Initialize Supabase connection.
 conn = st.connection(name="supabase", type=SupabaseConnection, url=SUPABASE_URL, key=SUPABASE_KEY)
 
 # Pythonクライエントを取得
 supabase = conn.client
 
-st.write(dir(conn))
-
+# クイズデータ取得メソッド
 def fetch_quiz():
     try: 
         # Perform query.
@@ -64,7 +62,7 @@ if quiz:
         hand_tile_url = f"https://raw.githubusercontent.com/kotaroburrito/mahjong/master/images/{tile}.PNG"
         
         # 各列に牌の画像を配置
-        with hand_columns: 
+        with hand_columns[i]: 
             st.image(hand_tile_url, width=20)
 
     # ツモを表示
