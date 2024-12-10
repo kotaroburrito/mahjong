@@ -19,20 +19,19 @@ PNG = ".PNG"
 
 # 手牌表示用のCSSレイアウト定義
 st.markdown("""
-<style>
-.hand-container {
-    display: flex;
-    justify-content: center;
-    gap: 0px; /* 牌の間の余白を0にする */
+    <style>
+    .hand-container {
+        display: flex;
+        justify-content: center;
+        gap: 0px; /* 牌の間の余白を0にする */
     }
 
-.hand-container img {
-    margin: 0; /* 各画像の余白をなくす */
-    padding: 0;
+    .hand-container img {
+        margin: 0; /* 各画像の余白をなくす */
+        padding: 0;
     }
-</style>
-""", unsafe_allow_html=True
-)
+    </style>
+""", unsafe_allow_html=True)
 
 hand_html = "<div class='hand-container'>"
 
@@ -105,11 +104,9 @@ def show_quiz():
     hand_columns = st.columns(len(hand))
     for url in hand_tile_url: 
         hand_html += f"<img src='{url}' width='{PATH_WIDTH}'>"
-        st.markdown(hand_html, unsafe_allow_html=True)
-        
-        # 各列に牌の画像を配置
-        with hand_columns[i]: 
-            st.image(url, width=PAI_WIDTH)
+    
+    hand_html += "</div>"
+    st.markdown(hand_html, unsafe_allow_html=True)
             
     # ツモを表示
     st.write("ツモ: ")
@@ -144,4 +141,3 @@ if quiz:
     # 回答表示ボタンが押された場合
     if st.button(SHOW_ANSWER_BUTTON): 
         show_answer()
-
