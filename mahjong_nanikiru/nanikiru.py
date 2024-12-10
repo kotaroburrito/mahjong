@@ -14,23 +14,10 @@ from st_supabase_connection import SupabaseConnection
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
-# 牌画像
-# TILE_BAI = os.getenv("BAI_URL")
-# TILE_FA = os.getenv("FA_URL")
-# TILE_ZHONG = os.getenv("BAI_ZHONG")
-
-# tiles = [
-#     f"{TILE_BAI}", 
-#     f"{TILE_FA}", 
-#     f"{TILE_ZHONG}"
-# ]
-
 # アプリケーションのメイン
 st.title("Nanikiru?")
 
 # Superbaseからクイズデータを取得
-# supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-
 # Initialize Supabase connection.
 conn = st.connection(name="supabase", type=SupabaseConnection, url=SUPABASE_URL, key=SUPABASE_KEY)
 
@@ -42,20 +29,8 @@ st.write(dir(conn))
 def fetch_quiz():
     try: 
         # Perform query.
-        # response = conn.query("*", table="nanikiru", ttl="10m").execute()
-        # response = conn.execute("SELECT * FROM nanikiru")
         response = supabase.table("nanikiru").select("*").execute()
 
-        # response = supabase.table('nanikiru').select('*').execute()
-        # response = supabase.table("nanikiru").select("id, dragon_normal, your_wind, table_wind, hand, zimo, correct_tile, explanation").execute()
-        
-        # debug用
-        # st.write("レスポンスの内容: ", response)
-        # st.write("レスポンスの種類: ", type(response))
-        # st.write("レスポンスのデータ: ", response.data)
-        # st.write("レスポンスの詳細:", response.__dict__)
-        # ここまでdebug用
-    
         # レスポンスデータがあるとき
         if response.data:
             # ランダムに1問選ぶ
@@ -82,14 +57,20 @@ if quiz:
     # 手牌を表示
     st.write("手牌: ")
     hand_tiles = quiz['hand'].split(",") # 1カラム1牌にするならここは変える!
-    for tile in hand_tiles: 
+
+    # 手牌を表示する列を生成
+    hand_columns = st.columns(len(hand_tiles))
+    for i, tile in enumerate(hand_tiles): 
         hand_tile_url = f"https://raw.githubusercontent.com/kotaroburrito/mahjong/master/images/{tile}.PNG"
-        st.image(hand_tile_url, width=50)
+        
+        # 各列に牌の画像を配置
+        with hand_columns: 
+            st.image(hand_tile_url, width=20)
 
     # ツモを表示
     st.write("ツモ: ")
     zimo_tile_url = f"https://raw.githubusercontent.com/kotaroburrito/mahjong/master/images/{quiz['zimo']}.PNG"
-    st.image(zimo_tile_url, width=50)
+    st.image(zimo_tile_url, width=20)
 
     # 答えを非表示にしておき、回答後に表示
     if st.button("答えを見る"): 
