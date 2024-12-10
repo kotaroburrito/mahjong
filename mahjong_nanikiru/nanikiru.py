@@ -17,6 +17,25 @@ PAI_WIDTH = 20
 PAI_URL = os.getenv("PAI_URL")
 PNG = ".PNG"
 
+# 手牌表示用のCSSレイアウト定義
+st.markdown("""
+<style>
+.hand-container {
+    display: flex;
+    justify-content: center;
+    gap: 0px /* 牌の間の余白を0にする */
+    }
+
+.hand-container img {
+    margin: 0 /* 各画像の余白をなくす */
+    padding: 0;
+    }
+</style>
+""", unsafe_allow_html=True
+)
+
+hand_html = "<div class='hand-container'>"
+
 # 回答ボタンの文言
 SHOW_ANSWER_BUTTON = "答えを見る"
 
@@ -84,7 +103,9 @@ def show_quiz():
 
     # 手牌を表示する列を生成
     hand_columns = st.columns(len(hand))
-    for i, url in enumerate(hand_tile_url): 
+    for url in hand_tile_url: 
+        hand_html += f"<img src='{url}' width='{PATH_WIDTH}'>"
+        st.markdown(hand_html, unsafe_allow_html=True)
         
         # 各列に牌の画像を配置
         with hand_columns[i]: 
