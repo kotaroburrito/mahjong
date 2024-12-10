@@ -65,7 +65,7 @@ def show_quiz():
 
     hand = [tile.strip() for tile in quiz['hand'].split(",")]
     for tile in hand: 
-        hand_tile_url = f"{PAI_URL}{tile}{PNG}"
+        hand_tile_url = [f"{PAI_URL}{tile}{PNG}"]
 
     zimo = quiz['zimo']
     zimo_tile_url = f"{PAI_URL}{zimo}{PNG}"
@@ -85,7 +85,7 @@ def show_quiz():
 
     # 手牌を表示する列を生成
     hand_columns = st.columns(len(hand))
-    for i in enumerate(hand): 
+    for i in len(hand): 
         
         # 各列に牌の画像を配置
         with hand_columns[i]: 
