@@ -33,8 +33,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-hand_html = "<div class='hand-container'>"
-
 # 回答ボタンの文言
 SHOW_ANSWER_BUTTON = "答えを見る"
 
@@ -100,8 +98,8 @@ def show_quiz():
     # 手牌を表示
     st.write("手牌: ")
 
-    # 手牌を表示する列を生成
-    hand_columns = st.columns(len(hand))
+    hand_html = "<div class='hand-container'>"
+
     for url in hand_tile_url: 
         hand_html += f"<img src='{url}' width='{PATH_WIDTH}'>"
     
