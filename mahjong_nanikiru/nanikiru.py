@@ -119,8 +119,6 @@ quiz = fetch_quiz()
 # クイズデータが取得できた場合
 if quiz: 
     show_quiz()
-    st.write(f"PAI_URL: {PAI_URL}")
-    st.write(f"画像URL例: {PAI_URL}zhong{PNG}")
     
     # 回答表示ボタンが押された場合
     if st.button(SHOW_ANSWER_BUTTON): 
