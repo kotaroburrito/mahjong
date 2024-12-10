@@ -27,7 +27,7 @@ st.markdown("""
     }
 
 .hand-container img {
-    margin: 0 /* 各画像の余白をなくす */
+    margin: 0; /* 各画像の余白をなくす */
     padding: 0;
     }
 </style>
