@@ -7,77 +7,120 @@ Created on 2024/12/01
 import streamlit as st
 import requests
 import os
+import random
+from st_supabase_connection import SupabaseConnection
+
+# 牌のサイズ
+PAI_WIDTH = 20
+
+# 牌の画像URLベース
+PAI_URL = os.getenv("PAI_URL")
+PNG = ".PNG"
+
+# 回答ボタンの文言
+SHOW_ANSWER_BUTTON = "答えを見る"
 
 # Supabaseとの接続情報
-SUPABASE_URL = os.getenv("STREAMLIT_SUPABASE_URL")
-SUPABASE_KEY = os.getenv("STREAMLIT_SUPABASE_KEY")
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
-# ページ名
-st.set_page_config(
-    page_title = "Nanikiru")
+# Initialize Supabase connection.
+conn = st.connection(name="supabase", type=SupabaseConnection, url=SUPABASE_URL, key=SUPABASE_KEY)
 
-st.title = "Nanikiru"
+# Pythonクライエントを取得
+supabase = conn.client
 
-# test
+# クイズデータ取得メソッド
+def fetch_quiz():
+    try: 
+        # Perform query.
+        response = supabase.table("nanikiru").select("*").execute()
 
-# セッション情報の初期化
-if "page_id" not in st.session_state:
-    st.session_state.page_id = "main"
-    st.session_state.answers = []
+        # レスポンスデータがあるとき
+        if response.data:
+            # ランダムに1問選ぶ
+            quiz_data = random.choice(response.data)
+            return quiz_data
 
-# 最初のページ
-def main():
-    st.markdown(
-        "<h1 style = 'text-align: center;> Nanikiru </h1>"
-        )
-    
-    def change_page():
-        st.session_state.answer.append(st.session_state.answer0)
-        st.session_state.page_id = "page1"
+        # レスポンスデータがないとき
+        if not response.data: 
+            st.error("クイズデータが見つかりません。")
+            return None
         
-    with st.form("f0"): 
-        st.form_submit_button("Start", on_click = change_page)
-        
-# 問題1
-def page1():
-    st.markdown(
-        "<h1 style='text-align: center;'>何切る?</h1>", 
-        unsafe_allow_html = True,
-        )
-    
-    def change_page():
-        st.session_state.answer.append(st.session_state.answer1)
-        st.session_state.page_id = "page2"
-    
-    with st.form("f1"): 
-        st.radio("何切る?", ["A", "B", "C"], key = "answer1")
-        st.form_submit_button("これ切る!", on_click = change_page)
-        
-def page_end():
-    st.markdown(
-        "<h2 style='text-align: center;'>あなたの回答は</h2>",
-        unsafe_allow_html = True,
-        )
+    except Exception as e: 
+        st.error(f"クイズデータの取得中にエラーが発生しました。{e}")
+        return None
 
-    st.markdown(
-        f"<div style='text-align: center;'>テーブル: {st.session_state.answer[0]}</div>",
-        unsafe_allow_html = True,
-        )
-    
-    for num, value in enumerate(st.session_state.answers, 0):
-        if num != 0:
-            st.markdown(
-                f"<div style='text-lign: center;'> 第{num}問: {value}</div>", 
-                unsafe_allow_html = True,
-                )
+# 出題メソッド
+def show_quiz():
+    # クイズデータの各要素を取得
+    dragon_normal = quiz['dragon_normal']
+    dragon_normal_url = f"{PAI_URL}{dragon_normal}{PNG}"
+
+    your_wind = quiz['your_wind']
+    your_wind_url = f"{PAI_URL}{your_wind}{PNG}"
+
+    table_wind = quiz['table_wind']
+    table_wind_url = f"{PAI_URL}{table_wind}{PNG}"
+
+    hand = [tile.strip() for tile in quiz['hand'].split(",")]
+    hand_tile_url = [f"{PAI_URL}{tile}{PNG}" for tile in hand]
+
+    zimo = quiz['zimo']
+    zimo_tile_url = f"{PAI_URL}{zimo}{PNG}"
+
+    # 自風、場風、ドラを表示
+    st.write("自風: ")
+    st.image(your_wind_url, width=PAI_WIDTH)
+
+    st.write("場風: ")
+    st.image(table_wind_url, width=PAI_WIDTH)
+
+    st.write(f"ドラ: ")
+    st.image(dragon_normal_url, width=PAI_WIDTH)
+
+    # 手牌を表示
+    st.write("手牌: ")
+
+    # 手牌を表示する列を生成
+    hand_columns = st.columns(len(hand))
+    for i, url in enumerate(hand_tile_url): 
+        
+        # 各列に牌の画像を配置
+        with hand_columns[i]: 
+            st.image(url, width=PAI_WIDTH)
             
-    if st.session_state.page_id == "main": 
-        main()
-    
-    if st.session_state.page_id == "page1":
-        page1()
-    
-    if st.session_state.page_id == "page_end":
-        page_end()
+    # ツモを表示
+    st.write("ツモ: ")
+    st.image(zimo_tile_url, width=PAI_WIDTH)
 
+    return
+
+# 回答表示メソッド
+def show_answer():
+    # 回答データの各要素を取得
+    correct_tile = quiz['correct_tile']
+    correct_tile_url = f"{PAI_URL}{correct_tile}{PNG}"
+    explanation = quiz['explanation']
+
+    st.write("正解: ")
+    st.image(correct_tile_url, width=PAI_WIDTH)
+    st.write(f"解説: {explanation}")
+
+    return
+
+
+# アプリケーションのメイン
+st.title("Nanikiru?")
+
+# クイズデータのオブジェクト生成
+quiz = fetch_quiz()
+
+# クイズデータが取得できた場合
+if quiz: 
+    show_quiz()
+    
+    # 回答表示ボタンが押された場合
+    if st.button(SHOW_ANSWER_BUTTON): 
+        show_answer()
 
